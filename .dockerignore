@@ -1,0 +1,15 @@
+# Git
+.git
+.gitignore
+
+#node
+node_modules
+.flowconfig
+.eslint*
+build
+
+#Misc
+README.md
+LICENSE
+Makefile
+.editorconfig
