@@ -1,13 +1,9 @@
-const CONNECT_EVENT			= 'CONNECT';
-const DISCONNECT_EVENT	= 'DISCONNECT';
-const ERROR_EVENT				= 'ERROR';
-const SUBSCRIBE_EVENT		= 'HEY';
-const UNSUBSCRIBE_EVENT	= 'BYE';
+import keymirror from 'keymirror';
 
-module.exports = {
-	CONNECT_EVENT,
-	DISCONNECT_EVENT,
-	ERROR_EVENT,
-	SUBSCRIBE_EVENT,
-	UNSUBSCRIBE_EVENT,
-};
+export default keymirror({
+	HEY: null,
+	BYE: null,
+	CONNECT: null,
+	DISCONNECT: null,
+	ERROR: null,
+});

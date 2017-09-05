@@ -7,18 +7,10 @@ import Events from 'constants/events';
 import EventHandler from './event-handler';
 
 const port = process.env.PORT || Defaults.PORT;
-const eventHandler = new EventHandler();
 const io = socketIO.listen(port);
-
 console.log('EventBus listening on', ip.address() + ':' + port);
 
-const router = socketEvents();
-router.on((socket, args, next) => {
-	const eventName = args.shift();
-	const payload = args.shift();
-	eventHandler.handleEvent(eventName, socket, payload);
-	next();
-});
+const eventHandler = new EventHandler();
 
 io.on('connection', (socket) => {
 	eventHandler.handleEvent(Events.CONNECT_EVENT, socket);
@@ -29,5 +21,14 @@ io.on('connection', (socket) => {
 		eventHandler.handleEvent(Events.ERROR_EVENT, socket);
 	});
 });
+
+const router = socketEvents();
+router.on((socket, args, next) => {
+	const eventName = args.shift();
+	const payload = args.shift();
+	eventHandler.handleEvent(eventName, socket, payload);
+	next();
+});
+
 
 io.use(router);

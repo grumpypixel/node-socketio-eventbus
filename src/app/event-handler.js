@@ -36,13 +36,17 @@ class EventHandler {
 				break;
 
 			case Events.SUBSCRIBE_EVENT:
-				this.handleSubscribeEvent(clientId, payload.channels);
-				this.channelManager.dumpChannels();
+				if (payload) {
+					this.handleSubscribeEvent(clientId, payload.channels);
+					this.channelManager.dumpChannels();
+				}
 				break;
 
 			case Events.UNSUBSCRIBE_EVENT:
-				this.handleUnsubscribeEvent(clientId, payload.channels);
-				this.channelManager.dumpChannels();
+				if (payload) {
+					this.handleUnsubscribeEvent(clientId, payload.channels);
+					this.channelManager.dumpChannels();
+				}
 				break;
 
 			default:
