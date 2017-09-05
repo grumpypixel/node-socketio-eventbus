@@ -41,6 +41,9 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-flow": "^6.23.0",
     "babel-preset-stage-0": "^6.24.1",
-    "babel-register": "^6.24.1"
+    "babel-register": "^6.24.1",
+    "ip": "^1.1.5",
+    "socket.io": "^2.0.3",
+    "socket.io-events": "^0.4.6"
   }
 }
