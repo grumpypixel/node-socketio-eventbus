@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import isArray from 'lodash.isarray';
 import Events from 'constants/events';
 import ClientManager from './client-manager';
 import ChannelManager from './channel-manager';
@@ -36,14 +37,14 @@ class EventHandler {
 				break;
 
 			case Events.SUBSCRIBE_EVENT:
-				if (payload) {
+				if (payload && payload.channels && isArray(payload.channels)) {
 					this.handleSubscribeEvent(clientId, payload.channels);
 					this.channelManager.dumpChannels();
 				}
 				break;
 
 			case Events.UNSUBSCRIBE_EVENT:
-				if (payload) {
+				if (payload && payload.channels && isArray(payload.channels)) {
 					this.handleUnsubscribeEvent(clientId, payload.channels);
 					this.channelManager.dumpChannels();
 				}
