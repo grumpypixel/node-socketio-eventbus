@@ -2,10 +2,10 @@
 import socketIO from 'socket.io';
 import socketEvents from 'socket.io-events';
 import ip from 'ip';
-import Defaults from 'constants/defaults';
+import defaults from 'constants/defaults';
 import EventHandler from './event-handler';
 
-const port = process.env.PORT || Defaults.PORT;
+const port = process.env.PORT || defaults.port;
 const io = socketIO.listen(port);
 console.log(`EventBus listening on ${ip.address()}:${port}`);
 
@@ -13,8 +13,8 @@ const events = {
 	CONNECT: 'connect',
 	DISCONNECT: 'disconnect',
 	ERROR: 'error',
-	SUBSCRIBE: 'HELLO',
-	UNSUBSCRIBE: 'BYE',
+	SUBSCRIBE: defaults.events.hey,
+	UNSUBSCRIBE: defaults.events.bye,
 };
 const channelProperty = 'subscriptions';
 const eventHandler = new EventHandler(events, channelProperty);

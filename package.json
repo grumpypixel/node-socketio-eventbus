@@ -44,7 +44,6 @@
     "babel-register": "^6.24.1",
     "debug": "^3.0.1",
     "ip": "^1.1.5",
-    "keymirror": "^0.1.1",
     "lodash.isarray": "^4.0.0",
     "socket.io": "^2.0.3",
     "socket.io-events": "^0.4.6"

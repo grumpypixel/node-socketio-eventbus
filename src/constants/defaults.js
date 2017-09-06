@@ -1,3 +1,7 @@
 module.exports = {
-	PORT: 12358,
+	port: 12358,
+	events: {
+		hey: 'HEY',
+		bye: 'BYE',
+	},
 };
