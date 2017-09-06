@@ -16,7 +16,7 @@ const events = {
 	SUBSCRIBE: defaults.events.hey,
 	UNSUBSCRIBE: defaults.events.bye,
 };
-const channelProperty = 'subscriptions';
+const channelProperty = defaults.channelProperty;
 const eventHandler = new EventHandler(events, channelProperty);
 
 io.on('connection', (socket) => {

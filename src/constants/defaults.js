@@ -4,4 +4,5 @@ module.exports = {
 		hey: 'HEY',
 		bye: 'BYE',
 	},
+	channelProperty: 'channels',
 };
