@@ -1,63 +1,63 @@
-/* eslint-disable no-console */
 import isArray from 'lodash.isarray';
-import Events from 'constants/events';
 import ClientManager from './client-manager';
 import ChannelManager from './channel-manager';
+import log from 'tools/log';
 
 class EventHandler {
-	constructor(clientManager, channelManager) {
+	constructor(events, channelProperty) {
 		this.clientManager = new ClientManager();
 		this.channelManager = new ChannelManager();
+		this.events = events;
+		this.channelProperty = channelProperty;
 	}
 
-	handleEvent(eventName, socket, payload = null) {
+	handleEvent(socket, eventName, payload = null) {
 		const clientId = socket.id;
-		console.log('--->', eventName, clientId, payload);
+		log.debug(`---> handleEvent: '${eventName}' clientId: '${clientId}' payload:`, payload);
 
 		switch (eventName) {
-			case Events.CONNECT_EVENT:
-				console.log('CONNECT', clientId);
+			case this.events.CONNECT:
 				this.clientManager.registerClient(clientId, socket);
 				this.clientManager.dumpClients();
 				break;
 
-			case Events.DISCONNECT_EVENT: {
-				console.log('DISCONNECT', clientId);
+			case this.events.DISCONNECT: {
+				log.debug(`Client disconnected: ${payload}`);
 				const client = this.clientManager.getClient(clientId);
 				if (client) {
 					this.channelManager.removeSubscriberFromChannels(clientId, client.getChannels());
 					this.clientManager.deregisterClient(clientId);
 				}
-				this.channelManager.dumpChannels();
-				this.clientManager.dumpClients();
 				break;
 			}
 
-			case Events.ERROR_EVENT:
+			case this.events.ERROR:
+				log.error(`An error occurred: ${payload}`);
 				break;
 
-			case Events.SUBSCRIBE_EVENT:
-				if (payload && payload.channels && isArray(payload.channels)) {
-					this.handleSubscribeEvent(clientId, payload.channels);
-					this.channelManager.dumpChannels();
+			case this.events.SUBSCRIBE:
+				if (this._isValidPayload(payload)) {
+					this._handleSubscribeEvent(clientId, payload[this.channelProperty]);
+				} else {
+					log.error('Malformed SUBSCRIBE event.');
 				}
 				break;
 
-			case Events.UNSUBSCRIBE_EVENT:
-				if (payload && payload.channels && isArray(payload.channels)) {
-					this.handleUnsubscribeEvent(clientId, payload.channels);
-					this.channelManager.dumpChannels();
+			case this.events.UNSUBSCRIBE:
+				if (this._isValidPayload(payload)) {
+					this._handleUnsubscribeEvent(clientId, payload[this.channelProperty]);
+				} else {
+					log.error('Malformed UNSUBSCRIBE event.');
 				}
 				break;
 
 			default:
-				this.dispatchEvent(eventName, payload);
+				this._dispatchEvent(eventName, payload);
 				break;
 		}
 	}
 
-	handleSubscribeEvent(clientId, channels) {
-		console.log('handleSubscribeEvent', clientId, channels);
+	_handleSubscribeEvent(clientId, channels) {
 		if (channels) {
 			const client = this.clientManager.getClient(clientId);
 			if (client) {
@@ -69,8 +69,7 @@ class EventHandler {
 		}
 	}
 
-	handleUnsubscribeEvent(clientId, channels) {
-		console.log('handleUnsubscribeEvent', clientId, channels);
+	_handleUnsubscribeEvent(clientId, channels) {
 		if (channels) {
 			const client = this.clientManager.getClient(clientId);
 			if (client) {
@@ -82,7 +81,8 @@ class EventHandler {
 		}
 	}
 
-	dispatchEvent(eventName, payload) {
+	_dispatchEvent(eventName, payload) {
+		log.debug(`dispatchEvent: ${eventName} payload:`, payload);
 		const channel = this.channelManager.getChannel(eventName);
 		if (channel) {
 			const subscribers = channel.getSubscribers();
@@ -93,6 +93,10 @@ class EventHandler {
 				}
 			});
 		}
+	}
+
+	_isValidPayload(payload) {
+		return (payload && payload[this.channelProperty] && isArray(payload[this.channelProperty]));
 	}
 }
 

@@ -1,19 +1,20 @@
 /* eslint-disable no-console */
 import Client from './client';
+import log from 'tools/log';
 
 class ClientManager {
 	constructor() {
 		this.clients = new Map();
 	}
 
-	registerClient(clientId, socket, timestamp) {
-		console.log('registerClient', clientId);
-		const client = new Client(socket, timestamp);
+	registerClient(clientId, socket) {
+		log.debug(`registerClient: ${clientId}`);
+		const client = new Client(socket);
 		this.clients.set(clientId, client);
 	}
 
 	deregisterClient(clientId) {
-		console.log('deregisterClient', clientId);
+		log.debug(`deregisterClient: ${clientId}`);
 		this.clients.delete(clientId);
 	}
 

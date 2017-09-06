@@ -1,40 +1,41 @@
 /* eslint-disable no-console */
 import Channel from './channel';
+import log from 'tools/log';
 
 class ChannelManager {
 	constructor() {
 		this.channels = new Map();
 	}
 
-	createChannel(name) {
-		console.log('createChannel', name);
-		let channel = this.channels.get(name);
+	createChannel(channelName) {
+		log.debug(`createChannel ${channelName}`);
+		let channel = this.channels.get(channelName);
 		if (!channel) {
 			channel = new Channel();
-			this.channels.set(name, channel);
+			this.channels.set(channelName, channel);
 		}
 		return channel;
 	}
 
-	destroyChannel(name) {
-		this.channels.delete(name);
+	destroyChannel(channelName) {
+		log.debug(`destroyChannel ${channelName}`);
+		this.channels.delete(channelName);
 	}
 
-	getChannel(name) {
-		return this.channels.get(name);
+	getChannel(channelName) {
+		return this.channels.get(channelName);
 	}
 
 	addSubscriber(subscriber, channelName) {
-		console.log('addChannelSubscriber', channelName, subscriber);
+		log.debug(`addSubscriber ${subscriber} ${channelName}`);
 		const channel = this.createChannel(channelName);
 		if (channel) {
 			channel.addSubscriber(subscriber);
 		}
-		this.dumpChannels();
 	}
 
 	removeSubscriber(subscriber, channelName) {
-		console.log('removeChannelSubscriber', channelName, subscriber);
+		log.debug(`remomveSubscriber ${subscriber} ${channelName}`);
 		const channel = this.getChannel(channelName);
 		if (channel) {
 			channel.removeSubscriber(subscriber);
@@ -42,11 +43,10 @@ class ChannelManager {
 				this.destroyChannel(channelName);
 			}
 		}
-		this.dumpChannels();
 	}
 
 	removeSubscriberFromChannels(subscriber, channels) {
-		console.log('removeSubscriberFromChannels', subscriber, channels);
+		log.debug(`removeSubscriberFromChannels ${subscriber}`, channels);
 		for (let i = 0; i < channels.length; ++i) {
 			this.removeSubscriber(subscriber, channels[i]);
 		}

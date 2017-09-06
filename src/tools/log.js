@@ -1,19 +1,7 @@
-/* eslint-disable no-console */
+import logger from 'debug';
 
-const logFactory = require('debug');
+const debug = logger('DEBUG');
+const trace = logger('TRACE');
+const error = logger('ERROR');
 
-export default function log(namespace) {
-	const debug = logFactory(namespace);
-
-	const error = logFactory(namespace);
-	error.log = console.error.bind(console);
-
-	const trace = logFactory(namespace);
-	trace.log = console.trace.bind(console);
-
-	return {
-		debug,
-		error,
-		trace,
-	};
-}
+export default { debug, trace, error };

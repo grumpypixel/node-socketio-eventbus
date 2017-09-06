@@ -3,22 +3,29 @@ import socketIO from 'socket.io';
 import socketEvents from 'socket.io-events';
 import ip from 'ip';
 import Defaults from 'constants/defaults';
-import Events from 'constants/events';
 import EventHandler from './event-handler';
 
 const port = process.env.PORT || Defaults.PORT;
 const io = socketIO.listen(port);
-console.log('EventBus listening on', ip.address() + ':' + port);
+console.log(`EventBus listening on ${ip.address()}:${port}`);
 
-const eventHandler = new EventHandler();
+const events = {
+	CONNECT: 'connect',
+	DISCONNECT: 'disconnect',
+	ERROR: 'error',
+	SUBSCRIBE: 'HELLO',
+	UNSUBSCRIBE: 'BYE',
+};
+const channelProperty = 'subscriptions';
+const eventHandler = new EventHandler(events, channelProperty);
 
 io.on('connection', (socket) => {
-	eventHandler.handleEvent(Events.CONNECT_EVENT, socket);
-	socket.on(Events.DISCONNECT_EVENT, () => {
-		eventHandler.handleEvent(Events.DISCONNECT_EVENT, socket);
+	eventHandler.handleEvent(socket, events.CONNECT);
+	socket.on(events.DISCONNECT, (reason) => {
+		eventHandler.handleEvent(socket, events.DISCONNECT, reason);
 	});
-	socket.on(Events.ERROR_EVENT, () => {
-		eventHandler.handleEvent(Events.ERROR_EVENT, socket);
+	socket.on(events.ERROR, (error) => {
+		eventHandler.handleEvent(socket, events.ERROR, error);
 	});
 });
 
@@ -26,9 +33,8 @@ const router = socketEvents();
 router.on((socket, args, next) => {
 	const eventName = args.shift();
 	const payload = args.shift();
-	eventHandler.handleEvent(eventName, socket, payload);
+	eventHandler.handleEvent(socket, eventName, payload);
 	next();
 });
-
 
 io.use(router);
