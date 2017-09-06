@@ -18,7 +18,6 @@ class EventHandler {
 		switch (eventName) {
 			case this.events.CONNECT:
 				this.clientManager.registerClient(clientId, socket);
-				this.clientManager.dumpClients();
 				break;
 
 			case this.events.DISCONNECT: {
