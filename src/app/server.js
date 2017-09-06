@@ -13,10 +13,10 @@ const events = {
 	CONNECT: 'connect',
 	DISCONNECT: 'disconnect',
 	ERROR: 'error',
-	SUBSCRIBE: defaults.events.hey,
-	UNSUBSCRIBE: defaults.events.bye,
+	SUBSCRIBE: process.env.SUBSCRIBE_EVENT || defaults.events.hey,
+	UNSUBSCRIBE: process.env.UNSUBSCRIBE_EVENT || defaults.events.bye,
 };
-const channelProperty = defaults.channelProperty;
+const channelProperty = process.env.CHANNELS_PROPERTY || defaults.channelProperty;
 const eventHandler = new EventHandler(events, channelProperty);
 
 io.on('connection', (socket) => {

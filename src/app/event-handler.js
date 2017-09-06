@@ -9,6 +9,7 @@ class EventHandler {
 		this.channelManager = new ChannelManager();
 		this.events = events;
 		this.channelProperty = channelProperty;
+		log.debug(`EventHandler: channelProperty: '${this.channelProperty}' events:`, this.events);
 	}
 
 	handleEvent(socket, eventName, payload = null) {
